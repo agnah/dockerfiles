@@ -1,0 +1,35 @@
+version: "1.0"
+
+services:
+  mysql-service:
+    container_name: mysql
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${DATABASE_PERSISTANT_DIR}/mysql:/var/lib/mysql
+      - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    ports:
+      - ${MYSQL_PORT}:3306
+
+  # gateway-service:
+  #   container_name: gateway
+  #   stdin_open: true
+  #   tty: true
+  #   image: ministerio/gateway:latest
+  #   environment:
+  #     - VIRTUAL_HOST=${GATEWAY_VIRTUAL_HOST}
+  #     - GATEWAY_ACCEPT_TOKEN=${GATEWAY_ACCEPT_TOKEN}
+  #     - ACCESS_TOKEN_EXPIRE_MINUTES=525600
+  #     - COMMON_DB_MODELS_DATABASE_URL=mysql+pymysql://default:secret@mysql-service:3306
+  #   ports:
+  #     - 8080:80
+  #   command: /start-reload.sh
+  #   volumes:
+  #     - ${GATEWAY_REPOSITORY_PATH}:/app/gateway
+  #   depends_on:
+  #     - redis-service
+  #     - postgres-service

@@ -1,0 +1,52 @@
+version: "1.0"
+
+services:
+  tickets-admin:
+    container_name: tickets-admin
+    stdin_open: true
+    tty: true
+    image: ministerio/tickets-admin:latest
+    command: "sh /start-reload.sh"
+    environment:
+      - VIRTUAL_HOST=${tickets_ADMIN_VIRTUAL_HOST}
+    volumes:
+      - ${tickets_ADMIN_REPOSITORY_PATH}:/usr/src/tickets-admin
+    ports:
+      - 7007:3000
+
+  tickets-user:
+    container_name: tickets-user
+    stdin_open: true
+    tty: true
+    image: ministerio/tickets-user:latest
+    command: "sh /start-reload.sh"
+    environment:
+      - VIRTUAL_HOST=${tickets_USER_VIRTUAL_HOST}
+    volumes:
+      - ${tickets_USER_REPOSITORY_PATH}:/usr/src/tickets-user
+    ports:
+      - 7008:3000
+
+  tickets-api-service:
+    container_name: tickets-api
+    stdin_open: true
+    tty: true
+    image: ministerio/tickets-api:latest
+    command: /start-reload.sh
+    environment:
+      - tickets_API_REPOSITORY_PATH=${tickets_API_REPOSITORY_PATH}
+      - tickets_API_DATABASE_URL=mysql+asyncmy://default:secret@mysql-service:3306/tickets
+    volumes:
+      - ${tickets_API_REPOSITORY_PATH}:/app/tickets-api
+
+  # tickets-consumer-api-service:
+  #   container_name: tickets-consumer-api
+  #   stdin_open: true
+  #   tty: true
+  #   image: ministerio/tickets-consumer-api:latest
+  #   command: /start-reload.sh
+  #   environment:
+  #     - tickets_API_BASE_URL=http://tickets-api-service
+  #     - tickets_CONSUMER_API_REPOSITORY_PATH=${tickets_CONSUMER_API_REPOSITORY_PATH}
+  #   volumes:
+  #     - ${tickets_CONSUMER_API_REPOSITORY_PATH}:/app/tickets-consumer-api

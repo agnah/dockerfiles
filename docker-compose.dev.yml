@@ -1,0 +1,19 @@
+version: "1.0"
+
+services:
+  phpmyadmin-service:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=mysql-service
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - PMA_PORT=${MYSQL_PORT}
+      - VIRTUAL_HOST=${PHPMYADMIN_VIRTUAL_HOST}
+    ports:
+      - 7030:80
+
+  admin-service:
+    container_name: adminer
+    image: adminer:latest
