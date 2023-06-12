@@ -63,7 +63,7 @@ Tickets database requirements
 .. code-block:: bash
 
    root@aaabbbcccdd:/# cd docker-entrypoint-initdb.d/
-   root@aaabbbcccdd:/# mysql -u root -p tickets < mysql-academia.sql
+   root@aaabbbcccdd:/# mysql -u root -p tickets < mysql-tickets.sql
 
 ----
 Install hosts
