@@ -33,10 +33,9 @@ add() {
     fi
 }
 
-# add "dev.gateway.com"
+
 add "dev.phpmyadmin.com"
-add "dev.admin.tickets.com"
-add "dev.user.tickets.com.ar"
-add "dev.tickets-api.com"
-add "dev.tickets-consumer-api.com"
 add "dev.adminer.local"
+# add "dev.admin.tickets.com"
+add "dev.tickets-api.com"
+# add "tickets-api.local"

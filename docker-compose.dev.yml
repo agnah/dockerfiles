@@ -1,4 +1,4 @@
-version: "1.0"
+version: "3.8"
 
 services:
   phpmyadmin-service:
@@ -17,3 +17,14 @@ services:
   admin-service:
     container_name: adminer
     image: adminer:latest
+
+  dns-proxy-server:
+    container_name: dns-proxy
+    image: defreitas/dns-proxy-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf
+    environment:
+      - HOSTNAMES=dns.mageddo
+      - MG_REGISTER_CONTAINER_NAMES=1
+      - MG_DOMAIN=docker

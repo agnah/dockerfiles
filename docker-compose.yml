@@ -1,4 +1,4 @@
-version: "1.0"
+version: "3.8"
 
 services:
   mysql-service:
@@ -15,21 +15,29 @@ services:
     ports:
       - ${MYSQL_PORT}:3306
 
-  # gateway-service:
-  #   container_name: gateway
-  #   stdin_open: true
-  #   tty: true
-  #   image: ministerio/gateway:latest
-  #   environment:
-  #     - VIRTUAL_HOST=${GATEWAY_VIRTUAL_HOST}
-  #     - GATEWAY_ACCEPT_TOKEN=${GATEWAY_ACCEPT_TOKEN}
-  #     - ACCESS_TOKEN_EXPIRE_MINUTES=525600
-  #     - COMMON_DB_MODELS_DATABASE_URL=mysql+pymysql://default:secret@mysql-service:3306
-  #   ports:
-  #     - 8080:80
-  #   command: /start-reload.sh
-  #   volumes:
-  #     - ${GATEWAY_REPOSITORY_PATH}:/app/gateway
-  #   depends_on:
-  #     - redis-service
-  #     - postgres-service
+  tickets-api-service:
+    container_name: tickets-api
+    stdin_open: true
+    tty: true
+    image: ministerio/tickets-api:latest
+    command: /start-reload.sh
+    environment:
+      - TICKETS_API_REPOSITORY_PATH=${TICKETS_API_REPOSITORY_PATH}
+      - TICKETS_API_DATABASE_URL=mysql+asyncmy://default:secret@mysql-service:3306/tickets
+    volumes:
+      - ${TICKETS_API_REPOSITORY_PATH}:/app/tickets-api
+    depends_on:
+      - mysql-service
+
+  tickets-admin:
+    container_name: tickets-admin
+    stdin_open: true
+    tty: true
+    image: ministerio/tickets-admin:latest
+    command: "sh /start-reload.sh"
+    environment:
+      - VIRTUAL_HOST=${TICKETS_ADMIN_VIRTUAL_HOST}
+    volumes:
+      - ${TICKETS_ADMIN_REPOSITORY_PATH}:/usr/src/tickets-admin
+    ports:
+      - 7007:3000

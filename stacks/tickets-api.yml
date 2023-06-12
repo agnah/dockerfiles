@@ -1,0 +1,46 @@
+version: "3.7"
+
+networks:
+  nextgen_network:
+    external:
+     name: nextgen_network
+
+secrets:
+  TICKETS_API_SYNC_DATABASE_URL:
+    external: true
+  TICKETS_API_DATABASE_URL:
+    external: true
+  TICKETS_API_DATABASE_ROUTING_CONFIG:
+    external: true
+
+services:
+  tickets-api-service:
+    networks:
+      - nextgen_network
+
+    # Include secrets
+    secrets:
+      - TICKETS_API_SYNC_DATABASE_URL
+      - TICKETS_API_DATABASE_URL
+      - TICKETS_API_DATABASE_ROUTING_CONFIG
+
+    environment:
+      - SECRETS_DIR=/var/run/secrets
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/api/healthcheck/"]
+      interval: 1s
+      timeout: 1s
+      retries: 120
+
+    deploy:
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+      mode: global
+      placement:
+        constraints:
+          - node.role == worker
+          - node.platform.os == linux
+          - node.labels.deploy_tickets-api == yes
