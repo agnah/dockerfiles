@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mysql-service:
-    container_name: mysql
+    container_name: mysql-ministerio
     image: mysql:${MYSQL_VERSION}
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
@@ -23,11 +23,13 @@ services:
     command: /start-reload.sh
     environment:
       - TICKETS_API_REPOSITORY_PATH=${TICKETS_API_REPOSITORY_PATH}
-      - TICKETS_API_DATABASE_URL=mysql+asyncmy://default:secret@mysql-service:3306/tickets
+      - TICKETS_API_DATABASE_URL=${TICKETS_API_DATABASE_URL}
     volumes:
       - ${TICKETS_API_REPOSITORY_PATH}:/app/tickets-api
     depends_on:
       - mysql-service
+    ports:
+      - 8000:80
 
   tickets-admin:
     container_name: tickets-admin
@@ -37,7 +39,8 @@ services:
     command: "sh /start-reload.sh"
     environment:
       - VIRTUAL_HOST=${TICKETS_ADMIN_VIRTUAL_HOST}
+      - CHOKIDAR_USEPOLLING=true
     volumes:
       - ${TICKETS_ADMIN_REPOSITORY_PATH}:/usr/src/tickets-admin
     ports:
-      - 7007:3000
+      - 3000:5173
