@@ -36,6 +36,6 @@ add() {
 
 add "dev.phpmyadmin.com"
 add "dev.adminer.local"
-# add "dev.admin.tickets.com"
+add "dev.admin.tickets.com"
 add "dev.tickets-api.com"
-# add "tickets-api.local"
+add "tickets-api.local"
