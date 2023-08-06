@@ -5,22 +5,22 @@ services:
     container_name: mysql-ministerio
     image: mysql:${MYSQL_VERSION}
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_DATABASE=tickets
       - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - ${DATABASE_PERSISTANT_DIR}/mysql:/var/lib/mysql
-      - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+      - ~/.ministerio_db/data/mysql:/var/lib/mysql
     ports:
-      - ${MYSQL_PORT}:3306
+      - 3306:3306
 
   tickets-api-service:
     container_name: tickets-api
-    stdin_open: true
-    tty: true
     image: ministerio/tickets-api:latest
-    command: /start-reload.sh
+    volumes:
+      - ./:/app/tickets-api
+    ports:
+      -8000:80
     environment:
       - TICKETS_API_REPOSITORY_PATH=${TICKETS_API_REPOSITORY_PATH}
       - TICKETS_API_DATABASE_URL=${TICKETS_API_DATABASE_URL}
