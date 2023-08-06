@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  phpmyadmin-service:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=mysql-service
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - PMA_PORT=${MYSQL_PORT}
+      - VIRTUAL_HOST=${PHPMYADMIN_VIRTUAL_HOST}
+    ports:
+      - 7030:80
+
+  admin-service:
+    container_name: adminer
+    image: adminer:latest
+
+  dns-proxy-server:
+    container_name: dns-proxy
+    image: defreitas/dns-proxy-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf
+    environment:
+      - HOSTNAMES=dns.mageddo
+      - MG_REGISTER_CONTAINER_NAMES=1
+      - MG_DOMAIN=docker

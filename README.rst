@@ -37,8 +37,8 @@ Tickets database requirements
 .. code-block:: bash
 
    $ docker-compose up -d mysql-service
-   $ docker exec -ti dockerfiles_mysql-service_1 bash
-   root@aaabbbcccdd:/# mysql -u root -p
+   $ docker exec -ti mysql-service bash
+   root@asdasd:/# mysql -u root -p
 
 
 * Create the necessary databases
@@ -57,14 +57,6 @@ Tickets database requirements
    FLUSH PRIVILEGES;
    exit;
 
-
-* Dump the databases into mysql
-
-.. code-block:: bash
-
-   root@aaabbbcccdd:/# cd docker-entrypoint-initdb.d/
-   root@aaabbbcccdd:/# mysql -u root -p tickets < mysql-tickets.sql
-
 ----
 Install hosts
 ----
@@ -74,7 +66,6 @@ Install hosts maps in your system:
 .. code-block:: bash
 
     $ sudo ./install-hosts.sh
-
 
 
 ----
@@ -94,8 +85,8 @@ Attach to a container's logs
 
 Sometimes during development we'd like to see the output of the service's logs, to do so, we can attach a terminal to follow the container's stdout logs
 
-For example, to attach to Ticket's logs:
+For example, to attach to Ticket's Api logs:
 
 .. code-block:: bash
 
-    $ docker logs $(docker ps -aqf "name=tickets") -f
+    $ docker logs -f tickets-api

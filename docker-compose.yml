@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  mysql-service:
+    container_name: mysql-ministerio
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      - MYSQL_DATABASE=tickets
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ~/.ministerio_db/data/mysql:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  tickets-api-service:
+    container_name: tickets-api
+    image: ministerio/tickets-api:latest
+    volumes:
+      - ./:/app/tickets-api
+    ports:
+      -8000:80
+    environment:
+      - TICKETS_API_REPOSITORY_PATH=${TICKETS_API_REPOSITORY_PATH}
+      - TICKETS_API_DATABASE_URL=${TICKETS_API_DATABASE_URL}
+    volumes:
+      - ${TICKETS_API_REPOSITORY_PATH}:/app/tickets-api
+    depends_on:
+      - mysql-service
+    ports:
+      - 8000:80
+
+  tickets-admin:
+    container_name: tickets-admin
+    stdin_open: true
+    tty: true
+    image: ministerio/tickets-admin:latest
+    command: "sh /start-reload.sh"
+    environment:
+      - VIRTUAL_HOST=${TICKETS_ADMIN_VIRTUAL_HOST}
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ${TICKETS_ADMIN_REPOSITORY_PATH}:/usr/src/tickets-admin
+    ports:
+      - 3000:5173
