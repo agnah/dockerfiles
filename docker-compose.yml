@@ -17,10 +17,10 @@ services:
   tickets-api-service:
     container_name: tickets-api
     image: ministerio/tickets-api:latest
-    volumes:
-      - ./:/app/tickets-api
-    ports:
-      -8000:80
+    # volumes:
+    #   - ./:/app/tickets-api
+    # ports:
+    #   -8000:80
     environment:
       - TICKETS_API_REPOSITORY_PATH=${TICKETS_API_REPOSITORY_PATH}
       - TICKETS_API_DATABASE_URL=${TICKETS_API_DATABASE_URL}
@@ -44,3 +44,4 @@ services:
       - ${TICKETS_ADMIN_REPOSITORY_PATH}:/usr/src/tickets-admin
     ports:
       - 3000:5173
+      
